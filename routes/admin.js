@@ -175,4 +175,14 @@ router.post("/postagens/nova", (req,res) => {
             res.redirect("/admin/postagens");
         })
     })
+
+    router.get("/postagens/deletar/:id", (req,res) => {
+        Postagem.remove({_id: req.params.id}).then(() => {
+            req.flash("success_msg", "Postagem removida com sucesso!");
+            res.redirect("/admin/postagens");
+        }).catch((err) => {
+            req.flash("error_msg", "Erro ao tentar remover postagem");
+            res.redirect("/admin/postagens");
+        })
+    })
 module.exports = router;
