@@ -37,8 +37,8 @@
         app.set('view engine', 'handlebars');
     //Mongoose
     mongoose.Promise = global.Promise;
-    mongoose.connect("mongodb://localhost/blogapp").then(() => {
-        console.log("Conectado ao mongoose");
+    mongoose.connect("mongodb+srv://haroldo:lucasgay123@blogappcluster-ukfsf.mongodb.net/blogapp?retryWrites=true&w=majority").then(() => {
+        console.log("Conectado ao mongo");
 
     }).catch((err) => {
         console.error("Deu defeito..." + err);
