@@ -15,6 +15,7 @@
     const usuarios = require('./routes/usuarios');
     const passport = require('passport');
     require("./config/auth")(passport);
+    const db = require('./config/db');
 
 //Configurações
     //Sessões
@@ -44,7 +45,7 @@
         app.set('view engine', 'handlebars');
     //Mongoose
     mongoose.Promise = global.Promise;
-    mongoose.connect("mongodb+srv://haroldo:lucasgay123@blogappcluster-ukfsf.mongodb.net/blogapp?retryWrites=true&w=majority").then(() => {
+    mongoose.connect(db.mongoUri).then(() => {
         console.log("Conectado ao mongo");
 
     }).catch((err) => {
@@ -112,7 +113,7 @@
     })
     app.use('/usuarios', usuarios);
 //Outros
-const PORT = 1488
+const PORT = process.env.PORT || 8089
 app.listen(PORT, () => {
     console.log('Servidor rodando');
 });

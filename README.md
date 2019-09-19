@@ -4,6 +4,6 @@ Olá! Através deste arquivo irei lhe mostrar como alterar as configurações pa
 
 ## Como rodar
 Para rodar, simplesmente digite supervisor app.js; acesse no seu navegador
-o endereço localhost:1488
+o endereço localhost:8089
 
 ## TODO
