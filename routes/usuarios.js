@@ -80,4 +80,9 @@ router.post('/registro', (req,res) => {
             failureFlash: true
         })(req,res,next)
     })
+    router.get('/logout', (req,res) => {
+        req.logout();
+        req.flash('success_msg', "Deslogado com sucesso");
+        res.redirect('/');
+    })
 module.exports = router;
