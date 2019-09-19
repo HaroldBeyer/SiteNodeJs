@@ -32,6 +32,7 @@
         res.locals.error_msg = req.flash("error_msg");
         res.locals.error = req.flash("error");
         res.locals.user = req.user || null;
+        res.locals.admin = req.user && req.user.eAdmin;
         //console.log('Oi, eu sou um middleware!');
         next();
     })
