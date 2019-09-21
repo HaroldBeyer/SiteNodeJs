@@ -6,6 +6,7 @@ const Categoria = mongoose.model('categorias')
 require("../models/Postagem");
 const Postagem = mongoose.model("postagens");
 const {eAdmin} = require("../helpers/eAdmin");
+//const converter = require('../helpers/slugConverter');
 
 router.get('/',eAdmin,  (req, res) => {
     res.render("admin/index");
@@ -26,14 +27,14 @@ router.get('/categorias/add', eAdmin, (req, res) => {
 })
 router.post("/categorias/nova", eAdmin, (req, res) => {
     var erros = [];
-    if(!req.body.nome || typeof req.body.nome == undefined || req.body.nome == null){
+    if(!req.body.nome){
         erros.push({
             texto: "Nome inválido ou inexistente"
         })
     }else if(req.body.nome.length < 2){
         erros.push({texto: "Nome muito pequenino"})
     }
-    if(!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null){
+    if(!req.body.slug){
         erros.push({
             texto: "Slug inválido ou inexistente"
         })
@@ -46,10 +47,10 @@ router.post("/categorias/nova", eAdmin, (req, res) => {
     if(erros.length > 0) {
         res.render("admin/addcategorias", {erros: erros} )
     }
-
+    console.log(converter(req.body.slug));
     const novaCategoria = {
       nome:  req.body.nome,
-      slug: req.body.slug
+      slug: converter(req.body.slug)
     }
     new Categoria(novaCategoria).save().then(() => {
         console.log("Categoria "+ novaCategoria.nome + " salva com sucesso!");
@@ -65,7 +66,7 @@ router.post("/categorias/edit",eAdmin, (req,res)=> {
     //falta validação
     Categoria.findOne({_id:req.body.id}).then(categoria => {
         categoria.nome = req.body.nome
-        categoria.slug = req.body.slug
+        categoria.slug = converter(req.body.slug);
         categoria.save().then(()=> {
             req.flash("success_msg", "Categoria editada com sucesso!");
             res.redirect("/admin/categorias");
@@ -130,7 +131,7 @@ router.post("/postagens/nova",eAdmin,  (req,res) => {
             descricao: req.body.descricao,
             conteudo: req.body.conteudo,
             categoria: req.body.categoria,
-            slug: req.body.slug
+            slug: converter(req.body.slug)
         }
         new Postagem(novaPostagem).save().then(() => {
             req.flash("success_msg", "Postagem criada com sucesso");
@@ -155,7 +156,7 @@ router.post("/postagens/nova",eAdmin,  (req,res) => {
         })
     })
 //
-    router.post("/postagem/edit",eAdmin,  (req,res) => {
+    router.post("/postagens/edit",eAdmin,  (req,res) => {
         Postagem.findOne({_id:req.body.id}).then((postagem) => {
             postagem.titulo = req.body.titulo
             postagem.slug = req.body.slug
@@ -186,4 +187,7 @@ router.post("/postagens/nova",eAdmin,  (req,res) => {
             res.redirect("/admin/postagens");
         })
     })
+    const converter = function(palavra) {
+        return palavra.trim().replace(/\s+/g, '').toLowerCase().replace(/[&\/\\#,+()$~%´^~.'":*?<>{}]/g, '');
+    }
 module.exports = router;
